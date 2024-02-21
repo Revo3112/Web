@@ -2,16 +2,14 @@
 include "database.php";
 if (isset($_POST['login'])) {
     if (loginUser($_POST['username'], $_POST['password']) == 1) {
-
         echo "<script>
-                
         Swal.fire({
             title: 'Selamat datang!',
             text: 'Anda berhasil login.',
             icon: 'success',
             confirmButtonText: 'OK'
         });
-            </script>";
+    </script>";
     }
 }
 ?>

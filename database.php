@@ -65,33 +65,41 @@ function loginUser($username, $password)
 {
     $username = mysqli_real_escape_string(getConnection(), $username);
     $password = mysqli_real_escape_string(getConnection(), $password);
-
     $query = "SELECT * FROM users WHERE username='$username';";
 
     $result = mysqli_query(getConnection(), $query);
-
     $user = mysqli_fetch_assoc($result);
 
-    $password = password_hash($password, PASSWORD_DEFAULT);
-
     if ($user) {
-        if (password_verify($password, $user['password'])) {
-            if ($user['role'] == "admin")
+        if (password_verify($password, $user['password'])) { // Compare hashed password
+            if ($user['role'] == "Admin") {
                 header("Location: admin.php");
-            else if ($user['role'] == "user")
+            } else if ($user['role'] == "User") {
+
+                echo "<script>
+        Swal.fire({
+            title: 'Selamat datang!',
+            text: 'Anda berhasil login.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    </script>";
                 header("Location: user.php");
+            }
         } else {
             echo "
-                <script>
-                    alert('Password is incorrect!');
-                </script>
-            ";
+                    <script>
+                        alert('Password is incorrect!');
+                        alert('password: " . htmlspecialchars($password) . "');
+                        alert('user password: " . htmlspecialchars($user['password']) . "');
+                    </script>
+                ";
         }
     } else {
         echo "
-            <script>
-                alert('Username is not registered!');
-            </script>
-        ";
+                <script>
+                    alert('Username is not registered!');
+                </script>
+            ";
     }
 }
