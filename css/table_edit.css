@@ -1,0 +1,18 @@
+.btn-save {
+    background-color: #add8e6; /* biru muda */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background-color: #4CAF50; /* hijau */
+    color: white;
+}
