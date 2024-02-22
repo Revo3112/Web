@@ -1,26 +1,10 @@
 <?php
 include 'database.php';
 
-// var_dump($_POST["article-id"]);
-// die;
-
 if (isset($_POST["article-save"])) {
-    $user_id = isset($_POST["user-id"]) ? $_POST["user-id"] : "";
-    $articleId = isset($_POST["article-id"]) ? $_POST["article-id"] : "";
-    $articleSave = isset($_POST["article-save"]) ? $_POST["article-save"] : "";
-    
-    $user_id = (int)$user_id;
-    // var_dump($_POST["user-id"]);
-    // die;
 
-    // S: Query untuk edit article
-    if ($articleId != "" && $articleSave != "") {
-        $query = "UPDATE articles SET script='$articleSave' WHERE user_id=$user_id AND id=$articleId";
-    } 
-    // S: Query untuk tambah article
-    else {
-        $query = "INSERT INTO articles(user_id, category_id, published, script, title) VALUES('$user_id', '1', CURRENT_TIMESTAMP, '$articleSave', 'TITLE!');";
-    }
+    $user_id = isset($_POST["user-id"]) ? $_POST["user-id"] : "";    
+    $query = "INSERT INTO articles(user_id, category_id, published, script, title) VALUES('$user_id', '1', CURRENT_TIMESTAMP, '$articleSave', 'TITLE!');";
 
     insertUserArticle($query, $user_id);
 }
@@ -48,8 +32,6 @@ if (isset($_POST["article-save"])) {
     <link rel="stylesheet" href="css/table_edit.css">
 
     <!-- S: Nilainya disimpen tag input soalnya kalo ada request POST lagi, nilai sebelumnya ilang -->
-    <input type="hidden" id="article_script" name="article-script" value="<?= $_POST['article-script'] ?>">
-    <input type="hidden" id="article_id" name="article-id" value="<?= $_POST['article-id'] ?>">
     <input type="hidden" id="user_id" name="user-id" value="<?= $_POST['user-id']?>">
 
     <div id="toolbar-container">
@@ -100,9 +82,7 @@ if (isset($_POST["article-save"])) {
         <form action="" method="post" id="article-form" class="ql-formats">
             <span class="ql-formats">
                 <input type="hidden" name="user-id">
-                <input type="hidden" name="article-id">
                 <input type="hidden" name="article-save">
-
                 <button type="submit" class="btn btn-primary" id="save-btn">
                     <span class="iconify" data-icon="mdi:content-save" style="color:black;"></span>
                 </button>
@@ -131,26 +111,13 @@ if (isset($_POST["article-save"])) {
             theme: 'snow',
         });
 
-        var userId = document.getElementById("user_id").value
-        var articleScript = document.getElementById("article_script").value
-        var articleId = document.getElementById("article_id").value
-
-        document.querySelector('#article-form input[name="user-id"]').value = userId
-        document.querySelector('#article-form input[name="article-id"]').value = articleId
-
-        if (articleScript != "" && articleId != "") {
-            console.log("MASUKKK")
-            console.log(articleScript)
-            var quillEditor = document.getElementById("editor");
-            quillEditor.children[0].innerHTML = articleScript;
-        }
-
+        
         document.querySelector('#save-btn').addEventListener('click', () => {
-            // let content = quill.root.innerHTML;
             let quillEditor = document.getElementById("editor");
-            
+            var userId = document.getElementById("user_id").value
+
+            document.querySelector('#article-form input[name="user-id"]').value = userId
             document.querySelector('#article-form input[name="article-save"]').value = quillEditor.children[0].innerHTML;
-            // Simpan `content` ke database atau tempat lain
         });
 
         document.querySelector('#myBtn').addEventListener('click', () => {
