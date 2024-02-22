@@ -1,3 +1,13 @@
+<?php
+require_once 'database.php';
+
+// Ambil user_id dan article_id dari parameter URL
+$user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
+$article_id = isset($_GET['article_id']) ? $_GET['article_id'] : '';
+$text = getScriptfromarticles($user_id, $article_id);
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,11 +29,6 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
     <link rel="stylesheet" href="css/table_edit.css">
-
-    <button class="btn btn-primary">
-        <span class="iconify" mdi-icon="mdi-content-save"></span>
-        Save!
-    </button>
 
     <div id="toolbar-container">
         <span class="ql-formats">
@@ -71,15 +76,15 @@
         </span>
         <!-- ... -->
         <span class="ql-formats">
-            <button class="btn btn-save">
-                <span class="iconify" data-icon="mdi:content-save"></span>
-                Simpan!
+            <button class="btn btn-primary">
+                <span class="iconify" data-icon="mdi:content-save" style="color:black;"></span>
             </button>
         </span>
     </div>
 
     <!-- QUILL Recent changes -->
     <div id="editor">
+        $text
     </div>
 
     <!-- Iconify -->

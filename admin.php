@@ -1,160 +1,228 @@
-    <?php
-    include "database.php";
+<?php
+include "database.php";
 
-    $query = "SELECT * FROM users";
-    $data = getData($query);
-    ?>
+// Ambil data pengguna dari tabel users
+$query = "SELECT id, username FROM users";
+$users = getData($query);
 
-    <!DOCTYPE html>
-    <html lang="en">
+// Inisialisasi array untuk menyimpan data artikel untuk setiap pengguna
+$articles_data = [];
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+// Loop melalui setiap pengguna
+foreach ($users as $user) {
+    // Ambil data artikel yang sesuai dengan pengguna saat ini
+    $user_id = $user['id'];
+    $articles_data[$user_id] = readArticles($user_id);
+}
+?>
 
-        <!-- INCLUDES -->
-        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+<!DOCTYPE html>
+<html lang="en">
 
-    </head>
+<head>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include DataTables library -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <!-- Include Poppins font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #333;
+            /* Warna background tema gelap */
+            color: #fff;
+            /* Warna teks putih */
+        }
 
-    <body>
-        <!-- CODE -->
-        <h1>My first PHP page</h1>
-        <button type="button" class="btn btn-primary" id="insert-btn" data-bs-toggle="modal" data-bs-target="#insert-modal">INSERT!!!</button>
-        <button type="button" class="btn btn-success" onclick="">Click me!</button>
-        <button id="logButton">Selesai</button>
+        /* Styling untuk background tabel */
+        .table {
+            background-color: #212529;
+            /* Warna background tabel gelap */
+            color: #fff;
+            /* Warna teks putih */
+            border-radius: 10px;
+        }
 
-        <!-- BUTTONS -->
-        <table id="article-tbl">
-            <thead>
-                <th>No.</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Role</th>
-            </thead>
-            <tbody>
-                <?php $i = 0; ?>
-                <?php foreach ($data as $d) : ?>
-                    <tr>
-                        <td><?php echo $i + 1; ?></td>
-                        <td><?php echo $d["username"] ?></td>
-                        <td><?php echo $d["password"] ?></td>
-                        <td><?php echo $d["role"] ?></td>
-                    </tr>
-                    <?php $i++; ?>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        .table-hover tbody tr:hover {
+            background-color: #343a40;
+            /* Warna hover row yang lebih gelap */
+        }
 
-        <!-- QUILL Editor -->
-        <div id="toolbar-container">
-            <span class="ql-formats">
-                <select class="ql-font"></select>
-                <select class="ql-size"></select>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-bold"></button>
-                <button class="ql-italic"></button>
-                <button class="ql-underline"></button>
-                <button class="ql-strike"></button>
-            </span>
-            <span class="ql-formats">
-                <select class="ql-color"></select>
-                <select class="ql-background"></select>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-script" value="sub"></button>
-                <button class="ql-script" value="super"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-header" value="1"></button>
-                <button class="ql-header" value="2"></button>
-                <button class="ql-blockquote"></button>
-                <button class="ql-code-block"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-list" value="ordered"></button>
-                <button class="ql-list" value="bullet"></button>
-                <button class="ql-indent" value="-1"></button>
-                <button class="ql-indent" value="+1"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-direction" value="rtl"></button>
-                <select class="ql-align"></select>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-link"></button>
-                <button class="ql-image"></button>
-                <button class="ql-video"></button>
-                <button class="ql-formula"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-clean"></button>
-            </span>
-        </div>
+        .table th,
+        .table td {
+            border-color: #454d55;
+            /* Warna border tabel */
+        }
 
-        <!-- QUILL Recent changes -->
-        <div id="editor">
+        .table th {
+            background-color: #343a40;
+            /* Warna background header tabel yang lebih gelap */
+        }
 
-        </div>
+        /* Styling untuk baris utama */
+        .parent {
+            background-color: #343a40;
+            /* Warna background baris utama yang lebih gelap */
+            color: #fff;
+            /* Warna teks putih */
+            cursor: pointer;
+        }
 
-        <div class="modal" tabindex="-1" role="dialog" id="insert-modal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Modal body text goes here.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        /* Styling untuk baris sub */
+        .child {
+            background-color: #454d55;
+            /* Warna background baris sub yang lebih gelap */
+            color: #fff;
+            /* Warna teks putih */
+        }
+
+        /* Styling untuk card */
+        .table-card {
+            padding: 20px;
+        }
+
+        .dataTables_wrapper .dataTables_filter .form-control {
+            border-radius: 20px;
+            border-color: #454d55;
+        }
+
+        .table .parent .odd {
+            background-color: #343a40;
+        }
+
+
+        .dataTables_wrapper {
+            border-color: #454d55;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Tambahkan card untuk memuat tabel -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card table-card">
+                    <div class="card-body">
+                        <div class="Keterangan">
+                            <h1 class="text-center">User Articles</h1>
+                        </div>
+                        <!-- TABLE -->
+                        <table id="article-tbl" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Username</th>
+                                    <th></th> <!-- Tambahkan kolom kosong untuk tombol dropdown -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $i = 0; ?>
+                                <?php foreach ($users as $user) : ?>
+                                    <tr class="parent"> <!-- Add the class "parent" to the parent row -->
+                                        <td><?php echo $i + 1; ?></td>
+                                        <td><?php echo $user["username"]; ?></td>
+                                        <td class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#user-<?php echo $user['id']; ?>"><i class="bi bi-caret-down-fill text-light"></i></td> <!-- Tambahkan tombol dropdown -->
+                                    </tr>
+                                    <?php $i++; ?>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+
+                        <?php foreach ($users as $user) : ?>
+                            <table id="user-<?php echo $user['id']; ?>" class="table table-hover child collapse" style="display: none;">
+                                <thead>
+                                    <tr>
+                                        <th>Article ID</th>
+                                        <th>Article Title</th>
+                                        <th>Article Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($articles_data[$user['id']] as $article) : ?>
+                                        <tr>
+                                            <td><?php echo $article['article_id']; ?></td>
+                                            <td><?php echo $article['article_title']; ?></td>
+                                            <td><?php echo $article['category_name']; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-        <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
-        <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <script src="js/datatable.js"></script>
-        <script>
-            $(document).ready(function() {
-                initDataTable('#article-tbl');
-                var myModal = document.getElementById('insert-modal')
-                var myInput = document.getElementById('insert-btn')
+    <script>
+        // Convert the PHP array to JSON and store it in a JavaScript variable
+        var articlesData = <?php echo json_encode($articles_data); ?>;
+
+        $(document).ready(function() {
+            var table = $('#article-tbl').DataTable({
+                "paging": true,
+                "searching": true,
+                "info": false,
             });
 
-            // Initialize Quill editor
-            const quill = new Quill('#editor', {
-                modules: {
-                    syntax: true,
-                    toolbar: '#toolbar-container',
-                },
-                placeholder: 'Compose an epic...',
-                theme: 'snow',
+            $('#article-tbl tbody').on('click', 'tr.parent', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var userId = $(this).find('td').first().text(); // Get the user_id from the first cell
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open this row
+                    row.child(format(userId)).show();
+                    tr.addClass('shown');
+                }
             });
+        });
 
-            // Get changes from script in quill editor
-            document.getElementById('logButton').addEventListener('click', function() {
-                var myEditor = document.querySelector('#editor')
-                var html = myEditor.children[0].innerHTML
-                console.log(html)
-            })
-        </script>
-    </body>
+        // Modify the format function to accept user_id as a parameter
+        function format(userId) {
+            // Get the articles data for this user
+            var articles = articlesData[userId];
 
-    </html>
+            var html = '<div class="child-row">';
+            html += '<table class="table table-hover">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th>Article ID</th>';
+            html += '<th>Article Title</th>';
+            html += '<th>Article Category</th>';
+            html += '</tr>';
+            html += '</thead>';
+            html += '<tbody>';
+
+            // Loop through the articles and add them to the table
+            for (var i = 0; i < articles.length; i++) {
+                html += '<tr>';
+                html += '<td>' + articles[i]['article_id']; + '</td>';
+                html += '<td><a href="user_article.php?article_id=' + articles[i]['article_id'] + '&user_id=<?php echo $user["id"]; ?>">' + articles[i]['article_title'] + '</a></td>';
+                html += '<td>' + articles[i]['category_name']; + '</td>';
+                html += '</tr>';
+            }
+
+            html += '</tbody>';
+            html += '</table>';
+            html += '</div>';
+            return html;
+        }
+    </script>
+</body>
+
+</html>

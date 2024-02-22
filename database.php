@@ -103,3 +103,41 @@ function loginUser($username, $password)
             ";
     }
 }
+
+function readArticles($user_id)
+{
+    // Gunakan parameter $user_id untuk memfilter artikel yang dimasukkan oleh pengguna tertentu
+    $query = "SELECT
+        articles.id AS article_id,
+        articles.published AS published_date,
+        articles.title AS article_title,
+        users.username,
+        categories.category_name
+    FROM
+        articles
+    INNER JOIN users ON articles.user_id = users.id
+    INNER JOIN categories ON articles.category_id = categories.id
+    WHERE articles.user_id = $user_id"; // Filter artikel berdasarkan user_id
+    $result = mysqli_query(getConnection(), $query);
+
+    // Buat array untuk menyimpan data artikel
+    $sub_data = [];
+
+    // Perulangan untuk mengambil setiap baris hasil query
+    while ($row = mysqli_fetch_assoc($result)) {
+        // Tambahkan setiap baris hasil query ke dalam array $sub_data
+        $sub_data[] = $row;
+    }
+
+    // Kembalikan array $sub_data yang berisi data artikel
+    return $sub_data;
+}
+
+function getScriptfromarticles($user_id, $article_id)
+{
+    $query = "SELECT script from articles where user_id=$user_id and id=$article_id";
+    $result = mysqli_query(getConnection(), $query);
+    $text = mysqli_fetch_assoc($result);
+
+    return $text;
+}
