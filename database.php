@@ -106,7 +106,7 @@ function loginUser($username, $password)
 
 function readArticles($user_id)
 {
-    // Gunakan parameter $user_id untuk memfilter artikel yang dimasukkan oleh pengguna tertentu
+    // Use the $user_id parameter to filter articles submitted by a specific user
     $query = "SELECT
         articles.id AS article_id,
         articles.published AS published_date,
@@ -117,27 +117,111 @@ function readArticles($user_id)
         articles
     INNER JOIN users ON articles.user_id = users.id
     INNER JOIN categories ON articles.category_id = categories.id
-    WHERE articles.user_id = $user_id"; // Filter artikel berdasarkan user_id
+    WHERE articles.user_id = $user_id"; // Filter articles based on user_id
+
     $result = mysqli_query(getConnection(), $query);
 
-    // Buat array untuk menyimpan data artikel
+    // Create an array to store the article data
     $sub_data = [];
 
-    // Perulangan untuk mengambil setiap baris hasil query
+    // Loop to fetch each row of the query result
     while ($row = mysqli_fetch_assoc($result)) {
-        // Tambahkan setiap baris hasil query ke dalam array $sub_data
+        // Add each row of the query result to the $sub_data array
         $sub_data[] = $row;
     }
 
-    // Kembalikan array $sub_data yang berisi data artikel
+    // Return the $sub_data array containing the article data
     return $sub_data;
 }
 
 function getScriptfromarticles($user_id, $article_id)
 {
-    $query = "SELECT script from articles where user_id=$user_id and id=$article_id";
-    $result = mysqli_query(getConnection(), $query);
-    $text = mysqli_fetch_assoc($result);
+    // Validasi parameter
+    if (!is_numeric($user_id) || !is_numeric($article_id)) {
+        return null; // Kembalikan null jika parameter tidak valid
+    }
+
+    $conn = getConnection();
+
+    // Persiapkan query menggunakan prepared statement
+    $query = "SELECT script FROM articles WHERE user_id = ? AND id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+
+    // Bind parameter ke query
+    mysqli_stmt_bind_param($stmt, "ii", $user_id, $article_id);
+
+    // Jalankan query
+    mysqli_stmt_execute($stmt);
+
+    // Dapatkan hasil query
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Periksa apakah ada hasil
+    if ($result && $row = mysqli_fetch_assoc($result)) {
+        // Jika ada hasil, kembalikan script
+        $text = $row['script'];
+    } else {
+        // Jika tidak ada hasil, atur $text menjadi null
+        $text = null;
+    }
+
+    // Tutup statement dan koneksi
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
 
     return $text;
+}
+
+function saveScript($user_id, $article_id, $content)
+{
+    // Validasi parameter
+    if (!is_numeric($user_id) || !is_numeric($article_id)) {
+        // Tampilkan pesan kesalahan jika parameter tidak valid
+        echo "<script>
+        Swal.fire({
+            title: 'Gagal!',
+            text: 'Parameter tidak valid.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        </script>";
+        return;
+    }
+
+    $conn = getConnection();
+
+    // Persiapkan query menggunakan prepared statement
+    $query = "UPDATE articles SET script = ? WHERE user_id = ? AND id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+
+    // Bind parameter ke query
+    mysqli_stmt_bind_param($stmt, "sii", $content, $user_id, $article_id);
+
+    // Eksekusi query
+    $result = mysqli_stmt_execute($stmt);
+
+    // Periksa hasil eksekusi query
+    if ($result) {
+        echo "<script>
+        Swal.fire({
+            title: 'Berhasil!',
+            text: 'Artikel berhasil disimpan.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+        </script>";
+    } else {
+        echo "<script>
+        Swal.fire({
+            title: 'Gagal!',
+            text: 'Artikel gagal disimpan.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        </script>";
+    }
+
+    // Tutup statement dan koneksi
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
 }

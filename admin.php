@@ -43,55 +43,49 @@ foreach ($users as $user) {
             /* Warna teks putih */
         }
 
-        /* Styling untuk background tabel */
+        /* Custom CSS */
+        /* Tambahkan properti border */
         .table {
             background-color: #212529;
-            /* Warna background tabel gelap */
             color: #fff;
-            /* Warna teks putih */
-            border-radius: 10px;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #343a40;
-            /* Warna hover row yang lebih gelap */
+            border: 1px solid #454d55;
+            /* Tambahkan border */
         }
 
         .table th,
         .table td {
             border-color: #454d55;
-            /* Warna border tabel */
+            /* Hapus border-color dari sini */
         }
 
         .table th {
             background-color: #343a40;
-            /* Warna background header tabel yang lebih gelap */
+            color: #fff;
         }
 
         /* Styling untuk baris utama */
         .parent {
             background-color: #343a40;
-            /* Warna background baris utama yang lebih gelap */
             color: #fff;
-            /* Warna teks putih */
             cursor: pointer;
+            border-bottom: 1px solid #454d55;
+            /* Tambahkan border-bottom */
         }
 
         /* Styling untuk baris sub */
         .child {
             background-color: #454d55;
-            /* Warna background baris sub yang lebih gelap */
             color: #fff;
-            /* Warna teks putih */
         }
 
         /* Styling untuk card */
         .table-card {
             padding: 20px;
+            border-radius: 20px;
         }
 
+        /* Hapus styling yang tidak perlu */
         .dataTables_wrapper .dataTables_filter .form-control {
-            border-radius: 20px;
             border-color: #454d55;
         }
 
@@ -99,9 +93,9 @@ foreach ($users as $user) {
             background-color: #343a40;
         }
 
-
-        .dataTables_wrapper {
+        .dataTables_wrapper .dataTables_filter .form-control {
             border-color: #454d55;
+            border-radius: 20px;
         }
     </style>
 </head>
@@ -122,16 +116,22 @@ foreach ($users as $user) {
                                 <tr>
                                     <th>No.</th>
                                     <th>Username</th>
-                                    <th></th> <!-- Tambahkan kolom kosong untuk tombol dropdown -->
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $i = 0; ?>
                                 <?php foreach ($users as $user) : ?>
-                                    <tr class="parent"> <!-- Add the class "parent" to the parent row -->
-                                        <td><?php echo $i + 1; ?></td>
-                                        <td><?php echo $user["username"]; ?></td>
-                                        <td class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#user-<?php echo $user['id']; ?>"><i class="bi bi-caret-down-fill text-light"></i></td> <!-- Tambahkan tombol dropdown -->
+                                    <tr class="parent" id="<?php echo $user['id']; ?>"> <!-- Tambahkan id pengguna sebagai id baris -->
+                                        <td style="border: 1px solid #dee2e6;"><?php echo $i + 1; ?></td>
+                                        <td class="d-flex justify-content-between align-items-center" style="border: 1px solid #dee2e6;">
+                                            <div><?php echo $user["username"]; ?></div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-caret-down"></i> <!-- Ikon panah ke bawah -->
+                                                </button>
+                                                <!-- Tidak ada dropdown menu -->
+                                            </div>
+                                        </td>
                                     </tr>
                                     <?php $i++; ?>
                                 <?php endforeach; ?>
@@ -139,20 +139,20 @@ foreach ($users as $user) {
                         </table>
 
                         <?php foreach ($users as $user) : ?>
-                            <table id="user-<?php echo $user['id']; ?>" class="table table-hover child collapse" style="display: none;">
+                            <table id="user-<?php echo $user['id']; ?>" class="table table-hover child" style="display: none;"> <!-- Hapus class "collapse" -->
                                 <thead>
                                     <tr>
-                                        <th>Article ID</th>
-                                        <th>Article Title</th>
-                                        <th>Article Category</th>
+                                        <th style="border: 1px solid #dee2e6;">Article ID</th>
+                                        <th style="border: 1px solid #dee2e6;">Article Title</th>
+                                        <th style="border: 1px solid #dee2e6;">Article Category</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($articles_data[$user['id']] as $article) : ?>
                                         <tr>
-                                            <td><?php echo $article['article_id']; ?></td>
-                                            <td><?php echo $article['article_title']; ?></td>
-                                            <td><?php echo $article['category_name']; ?></td>
+                                            <td style="border: 1px solid #dee2e6;"><?php echo $article['article_id']; ?></td>
+                                            <td style="border: 1px solid #dee2e6;"><?php echo $article['article_title']; ?></td>
+                                            <td style="border: 1px solid #dee2e6;"><?php echo $article['category_name']; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -178,7 +178,7 @@ foreach ($users as $user) {
             $('#article-tbl tbody').on('click', 'tr.parent', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
-                var userId = $(this).find('td').first().text(); // Get the user_id from the first cell
+                var userId = tr.attr('id'); // Get the user_id from the parent row's ID
 
                 if (row.child.isShown()) {
                     // This row is already open - close it
@@ -201,9 +201,9 @@ foreach ($users as $user) {
             html += '<table class="table table-hover">';
             html += '<thead>';
             html += '<tr>';
-            html += '<th>Article ID</th>';
-            html += '<th>Article Title</th>';
-            html += '<th>Article Category</th>';
+            html += '<th style="border: 1px solid #dee2e6;">Article ID</th>';
+            html += '<th style="border: 1px solid #dee2e6;">Article Title</th>';
+            html += '<th style="border: 1px solid #dee2e6;">Article Category</th>';
             html += '</tr>';
             html += '</thead>';
             html += '<tbody>';
@@ -211,9 +211,9 @@ foreach ($users as $user) {
             // Loop through the articles and add them to the table
             for (var i = 0; i < articles.length; i++) {
                 html += '<tr>';
-                html += '<td>' + articles[i]['article_id']; + '</td>';
-                html += '<td><a href="user_article.php?article_id=' + articles[i]['article_id'] + '&user_id=<?php echo $user["id"]; ?>">' + articles[i]['article_title'] + '</a></td>';
-                html += '<td>' + articles[i]['category_name']; + '</td>';
+                html += '<td style="border: 1px solid #dee2e6;">' + articles[i]['article_id'] + '</td>';
+                html += '<td style="border: 1px solid #dee2e6;"> <a href="admin_article.php?user_id=' + userId + '&article_id=' + articles[i]['article_id'] + '">' + articles[i]['article_title'] + '</a> </td>';
+                html += '<td style="border: 1px solid #dee2e6;">' + articles[i]['category_name'] + '</td>';
                 html += '</tr>';
             }
 
