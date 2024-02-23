@@ -2,8 +2,28 @@
 
 include "database.php";
 
-$query = "SELECT * FROM users WHERE id=1 AND role='User'";
-$data = getData($query);
+$user_id = $_GET["id"];
+
+$query = "SELECT * FROM users WHERE id=$user_id";
+$dataUser = getData($query);
+
+$query = "SELECT * FROM articles WHERE user_id=$user_id";
+$dataArticle = getData($query);
+
+if (isset($_GET["status"])) {
+    if ($_GET["status"] == "success") {
+        echo "<script>
+            alert('Berhasil');
+        </script>";
+    }
+}
+
+if (isset($_POST['delete-article-id'])) {
+    $article_id = $_POST['delete-article-id'];
+
+    deleteUserArticle($user_id, $article_id);
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -28,51 +48,70 @@ $data = getData($query);
 </head>
 
 <body>
-    <header>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#insertModal">
+    <!-- S: Ketika user tambah article -->
+    <!-- TODO: hilangkan form ketika statusnya bergantung pada articleid dari get -->
+    <form action="insert_article.php" method="post">
+        <input type="hidden" name="user-id" value="<?= $user_id ?>">
+        <button type="submit" class="btn btn-primary">
             <span class="iconify" data-icon="mdi-plus"></span>
             Tambah Article
         </button>
-    </header>
-    <table id="article-tbl">
-        <thead>
-            <th>No.</th>
-            <th>Title</th>
-            <th>Actions</th>
-        </thead>
-        <tbody>
-            <?php $i = 0; ?>
-            <?php foreach ($data as $d) : ?>
-                <tr>
-                    <td><?php echo $i + 1; ?></td>
-                    <td><?php echo $d["username"] ?></td>
-                    <td>
-                        <button type="button" class="btn btn-danger"><span class="iconify" data-icon="mdi-pencil"></button>
-                    </td>
-                </tr>
-                <?php $i++; ?>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    </form>
+
+    <!-- S: Ketika user edit article -->
+    <form id="article-form" action="edit_article.php" method="post">
+        <input type="hidden" name="user-id" value="<?= $user_id ?>">
+        <input type="hidden" name="article-id" value="">
+        <input type="hidden" name="article-script" value="">
+        <table id="article-tbl">
+            <thead>
+                <th>No.</th>
+                <th>Title</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                <?php $i = 0; ?>
+                <?php foreach ($dataArticle as $d) : ?>
+                    <tr>
+                        <td><?php echo $i + 1; ?></td>
+                        <td><?php echo $d["title"] ?></td>
+                        <td>
+                            <button type="submit" class="btn btn-warning edit-btn" data-article_id="<?= $d['id'] ?>" data-article_script="<?= $d['script'] ?>">
+                                <span class="iconify" data-icon="mdi-pencil">
+                            </button>
+                            <button type="button" class="btn btn-danger delete-btn" data-article_title="<?= $d['title'] ?>" data-article_id="<?= $d['id'] ?>">
+                                <span class="iconify" data-icon="mdi-trash">
+                            </button>
+                        </td>
+                    </tr>
+                    <?php $i++; ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </form>
 
     <!-- Modal -->
-    <div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>ini adalah contoh dari modal</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+    <form action="" method="post" id="article-delete-form">
+        <input type="hidden" name="delete-article-id" value="">
+        <div class="modal fade" id="modal-delete-article" tabindex="-1" aria-labelledby="modal-delete-article" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDeleteArticleTitle">Yakin?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Apakah Anda yakin untuk menghapus <b><span name="article-title"></span></b></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
+
 
     <!-- Iconify -->
     <script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
@@ -89,6 +128,26 @@ $data = getData($query);
     <script>
         $(document).ready(function() {
             initDataTable('#article-tbl');
+
+            $('#article-tbl').on('click', '.edit-btn', function() {
+                const data = {
+                    id: $(this).data('article_id'),
+                    script: $(this).data('article_script'),
+                }
+                $('#article-form input[name="article-id"]').val(data.id);
+                $('#article-form input[name="article-script"]').val(data.script);
+            });
+
+            $('#article-tbl').on('click', '.delete-btn', function() {
+                const data = {
+                    title: $(this).data('article_title'),
+                    article_id: $(this).data('article_id'),
+                }
+                console.log(data.title)
+                $('#modal-delete-article span[name="article-title"]').text(data.title);
+                $('#article-delete-form input[name="delete-article-id"]').val(data.article_id);
+                $('#modal-delete-article').modal('show');
+            });
         });
     </script>
 </body>

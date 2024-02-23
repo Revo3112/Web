@@ -1,5 +1,6 @@
 <?php
 include "database.php";
+
 if (isset($_POST['login'])) {
     if (loginUser($_POST['username'], $_POST['password']) == 1) {
         echo "<script>
@@ -23,7 +24,6 @@ if (isset($_POST['login'])) {
     <title>Login Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/loginstyle.css" rel="stylesheet">
-
 </head>
 
 <body class="font-poppins">

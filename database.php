@@ -69,22 +69,14 @@ function loginUser($username, $password)
 
     $result = mysqli_query(getConnection(), $query);
     $user = mysqli_fetch_assoc($result);
+    $user_id = $user['id'];
 
     if ($user) {
         if (password_verify($password, $user['password'])) { // Compare hashed password
             if ($user['role'] == "Admin") {
                 header("Location: admin.php");
             } else if ($user['role'] == "User") {
-
-                echo "<script>
-        Swal.fire({
-            title: 'Selamat datang!',
-            text: 'Anda berhasil login.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-    </script>";
-                header("Location: user.php");
+                header("Location: user.php?id=$user_id");
             }
         } else {
             echo "
@@ -133,11 +125,31 @@ function readArticles($user_id)
     return $sub_data;
 }
 
-function getScriptfromarticles($user_id, $article_id)
+function getUserArticle($user_id, $article_id)
 {
-    $query = "SELECT script from articles where user_id=$user_id and id=$article_id";
+    $query = "SELECT script FROM articles WHERE user_id=$user_id and id=$article_id";
     $result = mysqli_query(getConnection(), $query);
-    $text = mysqli_fetch_assoc($result);
+    $script = mysqli_fetch_assoc($result);
 
-    return $text;
+    return $script;
+}
+
+function insertUserArticle($query, $user_id) {
+
+    $result = mysqli_query(getConnection(), $query);
+
+    if ($result) {
+        header("Location: user.php?id=$user_id&status=success");
+    } else {
+    }
+}
+
+function deleteUserArticle($user_id, $article_id) {
+    $query = "DELETE FROM articles WHERE user_id=$user_id AND id=$article_id";
+
+    $result = mysqli_query(getConnection(), $query);
+
+    if ($result) {
+        header("Location: user.php?id=$user_id&status=success");
+    }
 }

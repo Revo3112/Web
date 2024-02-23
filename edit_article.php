@@ -1,27 +1,12 @@
 <?php
 include 'database.php';
 
-// var_dump($_POST["article-id"]);
-// die;
-
 if (isset($_POST["article-save"])) {
     $user_id = isset($_POST["user-id"]) ? $_POST["user-id"] : "";
     $articleId = isset($_POST["article-id"]) ? $_POST["article-id"] : "";
     $articleSave = isset($_POST["article-save"]) ? $_POST["article-save"] : "";
-    
-    $user_id = (int)$user_id;
-    // var_dump($_POST["user-id"]);
-    // die;
 
-    // S: Query untuk edit article
-    if ($articleId != "" && $articleSave != "") {
-        $query = "UPDATE articles SET script='$articleSave' WHERE user_id=$user_id AND id=$articleId";
-    } 
-    // S: Query untuk tambah article
-    else {
-        $query = "INSERT INTO articles(user_id, category_id, published, script, title) VALUES('$user_id', '1', CURRENT_TIMESTAMP, '$articleSave', 'TITLE!');";
-    }
-
+    $query = "UPDATE articles SET script='$articleSave' WHERE user_id=$user_id AND id=$articleId";
     insertUserArticle($query, $user_id);
 }
 
