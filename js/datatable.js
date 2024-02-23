@@ -4,16 +4,6 @@ function initDataTable(selector) {
         sortable: true,
         perPage: 5,
         perPageSelect: false,
-        layout: {
-            topStart: {
-                buttons: [
-                    {
-                        extend: 'collection',
-                        text: 'Export',
-                        buttons: ['csv', 'excel', 'pdf']
-                    }
-                ]
-            }
-        }
+        responsive: true,
     });
 }

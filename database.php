@@ -69,22 +69,14 @@ function loginUser($username, $password)
 
     $result = mysqli_query(getConnection(), $query);
     $user = mysqli_fetch_assoc($result);
+    $user_id = $user['id'];
 
     if ($user) {
         if (password_verify($password, $user['password'])) { // Compare hashed password
             if ($user['role'] == "Admin") {
                 header("Location: admin.php");
             } else if ($user['role'] == "User") {
-
-                echo "<script>
-        Swal.fire({
-            title: 'Selamat datang!',
-            text: 'Anda berhasil login.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-    </script>";
-                header("Location: user.php");
+                header("Location: user.php?id=$user_id");
             }
         } else {
             echo "
@@ -134,42 +126,35 @@ function readArticles($user_id)
     return $sub_data;
 }
 
-function getScriptfromarticles($user_id, $article_id)
+function getUserArticle($user_id, $article_id)
 {
-    // Validasi parameter
-    if (!is_numeric($user_id) || !is_numeric($article_id)) {
-        return null; // Kembalikan null jika parameter tidak valid
-    }
+    $query = "SELECT script FROM articles WHERE user_id=$user_id and id=$article_id";
+    $result = mysqli_query(getConnection(), $query);
+    $script = mysqli_fetch_assoc($result);
 
-    $conn = getConnection();
+    return $script;
+}
 
-    // Persiapkan query menggunakan prepared statement
-    $query = "SELECT script FROM articles WHERE user_id = ? AND id = ?";
-    $stmt = mysqli_prepare($conn, $query);
+function insertUserArticle($query, $user_id)
+{
 
-    // Bind parameter ke query
-    mysqli_stmt_bind_param($stmt, "ii", $user_id, $article_id);
+    $result = mysqli_query(getConnection(), $query);
 
-    // Jalankan query
-    mysqli_stmt_execute($stmt);
-
-    // Dapatkan hasil query
-    $result = mysqli_stmt_get_result($stmt);
-
-    // Periksa apakah ada hasil
-    if ($result && $row = mysqli_fetch_assoc($result)) {
-        // Jika ada hasil, kembalikan script
-        $text = $row['script'];
+    if ($result) {
+        header("Location: user.php?id=$user_id&status=success");
     } else {
-        // Jika tidak ada hasil, atur $text menjadi null
-        $text = null;
     }
+}
 
-    // Tutup statement dan koneksi
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
+function deleteUserArticle($user_id, $article_id)
+{
+    $query = "DELETE FROM articles WHERE user_id=$user_id AND id=$article_id";
 
-    return $text;
+    $result = mysqli_query(getConnection(), $query);
+
+    if ($result) {
+        header("Location: user.php?id=$user_id&status=success");
+    }
 }
 
 function saveScript($user_id, $article_id, $content)
