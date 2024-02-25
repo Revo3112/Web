@@ -3,7 +3,8 @@ include 'database.php';
 
 if (isset($_POST["article-save"])) {
 
-    $user_id = isset($_POST["user-id"]) ? $_POST["user-id"] : "";    
+    $user_id = isset($_POST["user-id"]) ? $_POST["user-id"] : "";
+    $articleSave = $_POST["article-save"];
     $query = "INSERT INTO articles(user_id, category_id, published, script, title) VALUES('$user_id', '1', CURRENT_TIMESTAMP, '$articleSave', 'TITLE!');";
 
     insertUserArticle($query, $user_id);
@@ -32,7 +33,7 @@ if (isset($_POST["article-save"])) {
     <link rel="stylesheet" href="css/table_edit.css">
 
     <!-- S: Nilainya disimpen tag input soalnya kalo ada request POST lagi, nilai sebelumnya ilang -->
-    <input type="hidden" id="user_id" name="user-id" value="<?= $_POST['user-id']?>">
+    <input type="hidden" id="user_id" name="user-id" value="<?= $_POST['user-id'] ?>">
 
     <div id="toolbar-container">
         <span class="ql-formats">
@@ -111,7 +112,7 @@ if (isset($_POST["article-save"])) {
             theme: 'snow',
         });
 
-        
+
         document.querySelector('#save-btn').addEventListener('click', () => {
             let quillEditor = document.getElementById("editor");
             var userId = document.getElementById("user_id").value
@@ -122,7 +123,7 @@ if (isset($_POST["article-save"])) {
 
         document.querySelector('#myBtn').addEventListener('click', () => {
             let quillEditor = document.getElementById("editor");
-            
+
             console.log(quillEditor.children[0].innerHTML);
         })
     </script>

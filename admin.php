@@ -2,7 +2,7 @@
 include "database.php";
 
 // Ambil data pengguna dari tabel users
-$query = "SELECT id, username FROM users";
+$query = "SELECT id, username FROM users WHERE role = 'User'";
 $users = getData($query);
 
 // Inisialisasi array untuk menyimpan data artikel untuk setiap pengguna
@@ -109,6 +109,7 @@ foreach ($users as $user) {
                     <div class="card-body">
                         <div class="Keterangan">
                             <h1 class="text-center">User Articles</h1>
+                            <a href="home.php">Go to Homepage</a>
                         </div>
                         <!-- TABLE -->
                         <table id="article-tbl" class="table table-hover">

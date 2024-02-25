@@ -22,7 +22,6 @@ if (isset($_POST['delete-article-id'])) {
     $article_id = $_POST['delete-article-id'];
 
     deleteUserArticle($user_id, $article_id);
-
 }
 
 ?>
@@ -50,13 +49,16 @@ if (isset($_POST['delete-article-id'])) {
 <body>
     <!-- S: Ketika user tambah article -->
     <!-- TODO: hilangkan form ketika statusnya bergantung pada articleid dari get -->
+
     <form action="insert_article.php" method="post">
         <input type="hidden" name="user-id" value="<?= $user_id ?>">
         <button type="submit" class="btn btn-primary">
             <span class="iconify" data-icon="mdi-plus"></span>
             Tambah Article
         </button>
+        <a href="home.php" style="margin-left: 20px;">Go to Homepage</a>
     </form>
+
 
     <!-- S: Ketika user edit article -->
     <form id="article-form" action="edit_article.php" method="post">

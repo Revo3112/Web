@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Pastikan user_id dan article_id memiliki nilai yang valid sebelum memanggil fungsi getScriptfromarticles
 if (!empty($user_id) && !empty($article_id)) {
     // Cek apakah ada konten yang tersimpan dari artikel sebelumnya
-    $text = getScriptfromarticles($user_id, $article_id);
+    $text = getUserArticle($user_id, $article_id);
 } else {
     // Tampilkan pesan kesalahan jika user_id atau article_id kosong
     echo "<script>

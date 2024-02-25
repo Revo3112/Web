@@ -109,7 +109,7 @@ function readArticles($user_id)
         articles
     INNER JOIN users ON articles.user_id = users.id
     INNER JOIN categories ON articles.category_id = categories.id
-    WHERE articles.user_id = $user_id"; // Filter articles based on user_id
+    WHERE articles.user_id = $user_id AND users.role='User'"; // Filter articles based on user_id
 
     $result = mysqli_query(getConnection(), $query);
 
@@ -121,6 +121,7 @@ function readArticles($user_id)
         // Add each row of the query result to the $sub_data array
         $sub_data[] = $row;
     }
+
 
     // Return the $sub_data array containing the article data
     return $sub_data;
