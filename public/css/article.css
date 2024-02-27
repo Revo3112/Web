@@ -1,14 +1,16 @@
 #article-title-container {
     display: block;
-  }
+}
   
-  #article-title {
-    width: 100%;
-    font-size: 30px;
-    font-weight: bold;
-  }
-  
-  #article-title:focus {
-    outline: none;
-    border: none;
-  }
+#article-title {
+  width: 100%;
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  background-color: white;
+}
+
+#article-title:focus {
+  outline: none;
+  border: none;
+}

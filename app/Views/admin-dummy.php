@@ -1,472 +1,40 @@
-<?php
-// include "database.php";
-
-// // Ambil data pengguna dari tabel users
-// $query = "SELECT id, username FROM users WHERE role = 'User'";
-// $users = getData($query);
-
-// // Inisialisasi array untuk menyimpan data artikel untuk setiap pengguna
-// $articles_data = [];
-
-// // Loop melalui setiap pengguna
-// foreach ($users as $user) {
-//     // Ambil data artikel yang sesuai dengan pengguna saat ini
-//     $user_id = $user['id'];
-//     $articles_data[$user_id] = readArticles($user_id);
-// }
-?>
-
 <html lang="en">
 
+
 <head>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <!-- Include DataTables library -->
+    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <!-- <link rel="stylesheet" href="<?php echo base_url("css/admin.css") ?>"> -->
+    <link rel="stylesheet" href="<?= base_url("css/admin.css") ?>">
+
     <style>
-        /* import */
-        @import url('https://fonts.cdnfonts.com/css/chomsky');
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:wght@500;600;700&display=swap');
-
-        :root {
-            --app-bg: #000000;
-            --sidebar: #121212;
-            --sidebar-text: #B3B3B3;
-            --sidebar-text-active: #fff;
-            --dropdown-bg: #282828;
-            --active-hover: #3D3D3E;
-            --widgets-active: #242424;
-        }
-
-
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-        }
-
-        body {
-            overflow: hidden;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--app-bg);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .app-logo-text {
-            display: flex;
-            align-items: center;
-            border-radius: 7px;
-            background: linear-gradient(135deg, #4300ff 0%, #717371 100%);
-            width: 50px;
-            height: 50px;
-            justify-content: center;
-            font-family: 'Chomsky';
-            font-size: 40;
-            font-weight: 100;
-        }
-
-        .app-icon p {
-            color: var(--sidebar-text-active);
-            margin-right: 2px;
-        }
-
-        .app-icon {
-            display: flex;
-            align-items: center;
-            padding: 0 10 0 10;
-            border-radius: 10px;
-            transition: background-color 200ms;
-            cursor: pointer;
-        }
-
-        .profile-dropdown {
-            display: none;
-            position: absolute;
-            border-radius: 3px;
-            width: 90px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 3px 0 rgba(0, 0, 0, 0.19);
-            /* Box shadow added */
-            background-color: var(--dropdown-bg);
-            z-index: 1;
-        }
-
-        .profile-dropdown a {
-            padding: 7px;
-            font-size: 13;
-            color: var(--sidebar-text-active);
-            text-decoration: none;
-            display: block;
-        }
-
-        .app-icon:hover {
-            #username {
-                color: var(--sidebar-text-active);
-                transition: 200ms;
-            }
-
-            background-color: var(--active-hover);
-            transition: 200ms;
-        }
-
-        .dropdown-hover {
-            border-radius: 5px;
-            margin: 3;
-        }
-
-        .dropdown-hover:hover {
-            background-color: var(--active-hover);
-            transition: 200ms;
-        }
-
-        #username {
-            font-size: 15;
-            color: var(--sidebar-text);
-            margin-top: -17;
-            transition: color 200ms;
-        }
-
-
-        .app-container {
-            border-radius: 4px;
-            width: 100%;
-            height: 100%;
-            max-height: 100%;
-            display: flex;
-            overflow: hidden;
-            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-            max-width: 2000px;
-        }
-
-        .app-logo-admin {
-            margin-left: 15;
-        }
-
-        .sidebar {
-            border-radius: 10px;
-            margin: 10;
-            padding: 10;
-            flex-basis: 250px;
-            max-width: 300px;
-            flex-shrink: 0;
-            background-color: var(--sidebar);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-list-item a {
-            text-decoration: none;
-            color: var(--sidebar-text);
-            font-size: 18px;
-            align-items: center;
-            display: flex;
-            width: 100%;
-        }
-
-        .sidebar-list-item {
-            display: flex;
-            list-style: none;
-            height: 30px;
-            margin-bottom: 20px;
-            margin-left: -27px;
-            transition: color 200ms;
-        }
-
-        .sidebar-list-item.active a {
-            color: var(--sidebar-text-active);
-        }
-
-        .sidebar-list-item a:hover {
-            color: var(--sidebar-text-active);
-            transition: 200ms;
-        }
-
-        .app-content {
-            border-radius: 10px;
-            margin: 10 0 10 0;
-            padding: 0 0 0 10;
-            max-width: 2300px;
-            flex-shrink: 0;
-            background-color: var(--sidebar);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        svg {
-            margin-right: 20px;
-            width: 25;
-            height: 25;
-        }
-
-        .app-content-image {
-            width: 970px;
-            height: 200px;
-            margin-left: -10px;
-            border-radius: 10px 10px 0px 0px;
-            object-fit: cover;
-            background-size: cover;
-            background-image: linear-gradient(360deg, rgba(0, 0, 0, 1.6601015406162465) 0%, rgba(92, 0, 0, 0.0678606442577031) 80%), url("https://wallpapercave.com/wp/wp3396925.jpg");
-            object-position: 100% 0;
-            image-rendering: pixelated;
-            -ms-interpolation-mode: nearest-neighbor;
-            -webkit-transform: scale(0.999);
-            transform: scale(0.999);
-        }
-
-        .app-content-headerText {
-            color: var(--sidebar-text-active);
-            position: relative;
-            bottom: 160px;
-            margin-left: 20px;
-            font-size: 2.5rem;
-        }
-
-        .app-content-headerBrand svg {
-            position: relative;
-            bottom: 2px;
-            right: 2px;
-            width: 18px;
-            height: 18px;
-            fill: #0c67d3;
-        }
-
-        .app-content-headerBrand {
-            position: relative;
-            bottom: 70px;
-            right: 30px;
-            justify-content: right;
-            align-items: center;
-            display: flex;
-        }
-
-        .app-content-headerBrand h1 {
-            position: relative;
-            bottom: 2px;
-            margin-right: 10px;
-            font-weight: normal;
-            font-family: 'Chomsky', serif;
-            font-size: 25px;
-            color: var(--sidebar-text-active);
-        }
-
-        .circle-spot-brand {
-            background-color: white;
-            border-radius: 50%;
-            height: 13px;
-            width: 13px;
-        }
-
-        .search-bar-container {
-            position: relative;
-            background-color: #0c67d3;
-            display: flex;
-            align-items: center;
-            padding-left: 12px;
-            margin-top: 10px;
-            max-width: 450px;
-            width: 280px;
-            height: 40px;
-            background-color: var(--widgets-active);
+        .dataTables_wrapper .dataTables_filter .form-control {
             border-radius: 20px;
-            border: 1px solid transparent;
         }
 
-        .search-bar {
-            position: relative;
-            color: var(--sidebar-text-active);
-            width: 400px;
-            font-family: 'Poppins';
-            font-size: 14px;
-            background-color: transparent;
-            outline-width: 0;
-            border: 1px solid transparent;
+        th,
+        td {
+            border-color: #fff;
+            /* Hapus border-color dari sini */
         }
 
-        .search-bar-container:hover {
-            border: 1px solid var(--sidebar-text);
-        }
-
-        .app-content-actions {
-            position: relative;
-            bottom: 170px;
-            display: flex;
-            align-items: center;
-        }
-
-        .app-content-actions .edit-button {
-            align-items: center;
-            display: flex;
-            margin-top: 10px;
-            max-width: 300px;
-            position: relative;
-            left: 490px;
-            width: 65px;
-            margin-right: 10px;
-            height: 40px;
-            border-radius: 20px;
-            background-color: var(--widgets-active);
-            color: var(--sidebar-text-active);
-        }
-
-        .app-content-actions .create-button {
-            align-items: center;
-            display: flex;
-            margin-top: 10px;
-            max-width: 300px;
-            position: relative;
-            left: 490px;
-            width: 85px;
-            height: 40px;
-            border-radius: 20px;
-            background-color: var(--widgets-active);
-            color: var(--sidebar-text-active);
-        }
-
-        .app-content-actions .edit-button p {
-            margin-left: 17px;
-        }
-
-        .app-content-actions .create-button p {
-            margin-left: 15px;
-        }
-
-        .edit-button:hover {
-            cursor: pointer;
-            background-color: var(--active-hover);
-        }
-
-        .create-button:hover {
-            cursor: pointer;
-            background-color: var(--active-hover);
-        }
-
-        .app-content-middle {
-            position: relative;
-            bottom: 170px;
-        }
-
-        .content-header-overview h1 {
-            margin-top: 30px;
-            margin-left: 15px;
-            color: white;
-            font-size: 25px;
-        }
-
-        .content-image img {
-            border-radius: 7px;
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            object-position: 100% 0;
-            -ms-interpolation-mode: nearest-neighbor;
-            -webkit-transform: scale(0.999);
-            transform: scale(0.999);
-        }
-
-        .content-row-overview {
-            color: white;
-            display: flex;
-            align-items: center;
-        }
-
-        .content-overview {
-            margin-right: 10px;
-            padding: 15px;
-            justify-self: center;
-            align-items: center;
-            width: 150px;
-            height: 250px;
-            background-color: #181818;
-            border-radius: 10px;
-            transition: background-color 100ms;
-        }
-
-        .content-overview:hover {
-            cursor: pointer;
-            background-color: #272727;
-            transition: 200ms;
-        }
-
-        .title-desc h1 {
-            position: relative;
-            bottom: 25px;
-        }
-
-        .title-status p {
-            color: var(--sidebar-text);
-            position: relative;
-            bottom: 50px;
-            font-size: 12px;
-        }
-
-        .content-chart-preview {
-            display: flex;
-            justify-content: space-between;
-            width: 400px;
-            height: 200px;
-            margin: 0 auto;
+        th {
             background-color: #3D3D3E;
-            padding: 10px;
+            color: #fff;
         }
 
-        .content-body-overview {
-            margin: 0 auto;
-            width: 900px;
-        }
-
-        .table-body-header {
-            display: flex;
-            align-items: center;
-            background-color: var(--active-hover);
-            color: var(--sidebar-text-active);
-            border-radius: 4px;
-            width: 900px;
-            margin: 0 auto;
-        }
-
-        .table-body-content {
-            display: flex;
-            align-items: center;
-            color: var(--sidebar-text);
-            border-radius: 4px;
-            width: 900px;
-            margin: 0 auto;
-        }
-
-        .user-data {
-            display: flex;
-            align-items: center;
-            margin: 0 auto;
-            padding: 5px;
-        }
-
-        .user-cell {
-            display: flex;
-            align-items: center;
-            margin: 0 auto;
-            padding: 5px;
-        }
-
-        .sort-button {
-            display: flex;
-            padding: 0;
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--sidebar-text);
-            margin-left: 4px;
-            align-items: center;
-
-            &:hover {
-                color: var(--sidebar-text-active);
-            }
-
-            svg {
-                width: 15px;
-            }
+        .table {
+            background-color: #3D3D3E;
+            color: #fff;
+            border: 1px solid #fff;
+            /* Tambahkan border */
         }
     </style>
 </head>
@@ -481,10 +49,15 @@
                     </div>
                     <div class="app-logo-admin">
                         <p>Admin Panel</p>
-                        <p id="username">Logged in as <?php echo session()->get('username'); ?></p>
+                        <p id="username">Logged in as <?php echo $dataUser[0]['username']; ?></p>
                     </div>
                 </div>
                 <div class="profile-dropdown" id="profile-dropdown">
+                    <div class="dropdown-hover">
+                        <a href="<?= base_url() ?>">
+                            Home
+                        </a>
+                    </div>
                     <div class="dropdown-hover">
                         <a href="#">
                             Profile
@@ -496,7 +69,7 @@
                         </a>
                     </div>
                     <div class="dropdown-hover">
-                        <a href="#">
+                        <a href="<?= base_url('auth/logout') ?>">
                             Log out
                         </a>
                     </div>
@@ -732,60 +305,162 @@
                     <div class="content-header-overview">
                         <h1>User Table</h1>
                     </div>
-                    <div class="table-body-header">
-                        <div class="user-cell">
-                            User Tag
-                            <button class="sort-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512">
-                                    <path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="user-cell">
-                            Username
-                            <button class="sort-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512">
-                                    <path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="user-cell">
-                            Status
-                            <button class="sort-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512">
-                                    <path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="user-cell">
-                            Created Since
-                            <button class="sort-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512">
-                                    <path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" />
-                                </svg>
-                            </button>
-                        </div>
+                    <!-- TABLE -->
+                    <div class="d-flex">
+                        <table id="article-tbl" class="table table-hover" style="color: white; margin-right: 10px;">
+                            <thead style="width: 10%;">
+                                <tr>
+                                    <th style="background-color: #3D3D3E;">No.</th>
+                                    <th style="background-color: #3D3D3E;">Username</th>
+                                    <th style="background-color: #3D3D3E;">Created_at</th>
+                                    <th style="background-color: #3D3D3E;">Last_active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $i = 0; ?>
+                                <?php foreach ($dataUser as $d) : ?>
+                                    <tr class="parent" id="<?php echo $d['id']; ?>"> <!-- Tambahkan id pengguna sebagai id baris -->
+                                        <td style="border: 1px solid #dee2e6;"><?php echo $i + 1; ?></td>
+                                        <td class="d-flex justify-content-between align-items-center" style="border: 1px solid #dee2e6;">
+                                            <div><?php echo $d["username"]; ?></div>
+                                        </td>
+                                        <!-- Tambahkan kolom Created_at dan Last_active -->
+                                        <td style="border: 1px solid #dee2e6;"><?php echo $d["created_at"]; ?></td>
+                                        <td style="border: 1px solid #dee2e6;"><?php echo $d["last_active"]; ?></td>
+                                    </tr>
+                                    <?php $i++; ?>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="table-body-content">
-                        <?php $i = 0; ?>
-                        <?php foreach ($dataUser as $user) : ?>
-                            <div class="user-data"><?php echo $user['id']; ?></div>
-                            <div class="user-data"><?php echo $user['id']; ?></div>
-                            <div class="user-data"><?php echo $user['id']; ?></div>
-                            <div class="user-data"><?php echo $user['id']; ?></div>
-                            <?php $i++; ?>
-                        <?php endforeach; ?>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
     </div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     </script>
     <script>
         // tb script
+        var articlesData = <?php
+                            // Function to recursively apply htmlspecialchars to string values
+                            function htmlspecialcharsRecursive($array)
+                            {
+                                foreach ($array as $key => $value) {
+                                    if (is_array($value)) {
+                                        // If the value is an array, apply htmlspecialchars recursively
+                                        $array[$key] = htmlspecialcharsRecursive($value);
+                                    } elseif (is_string($value)) {
+                                        // If the value is a string, apply htmlspecialchars
+                                        $array[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                                    }
+                                }
+                                return $array;
+                            }
+                            // Encode the articles data and apply htmlspecialchars recursively
+                            $encodedArticles = json_encode(htmlspecialcharsRecursive($articlesByUser), JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
+                            echo $encodedArticles;
+                            ?>;
 
+        $(document).ready(function() {
+            var table = $('#article-tbl').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+            });
+
+            // Menampilkan sub-row saat baris utama diklik
+            $('#article-tbl tbody').on('click', 'tr.parent', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var userId = tr.attr('id'); // Dapatkan user_id dari ID baris utama
+
+                if (row.child.isShown()) {
+                    // Baris ini sudah terbuka - tutup
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Buka baris ini
+                    row.child(format(userId)).show();
+                    tr.addClass('shown');
+                }
+            });
+        });
+
+        // Fungsi untuk menghasilkan HTML untuk sub-row
+        function format(userId) {
+            // Dapatkan data artikel untuk pengguna ini
+            var articles = articlesData[userId]; // Mengakses data artikel berdasarkan ID pengguna
+            console.log(articles);
+            var html = '<div class="child-row">';
+            html += '<table class="table table-hover">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th style="border: 1px solid #dee2e6;">Article ID</th>';
+            html += '<th style="border: 1px solid #dee2e6;">Article Title</th>';
+            html += '<th style="border: 1px solid #dee2e6;">Article Category</th>';
+            html += '<th style="border: 1px solid #dee2e6;">Action</th>';
+            html += '</tr>';
+            html += '</thead>';
+            html += '<tbody>';
+
+            // Melakukan loop melalui artikel dan menambahkannya ke tabel
+            count = 0;
+            for (var i = 0; i < articles.length; i++) {
+                html += '<tr>';
+                html += '<td style="border: 1px solid #dee2e6;">' + (count + 1) + '</td>';
+                html += '<td style="border: 1px solid #dee2e6;">' + articles[i]['article_title'] + '</td>';
+                html += '<td style="border: 1px solid #dee2e6;">' + articles[i]['category_name'] + '</td>';
+                html += '<td style="border: 1px solid #dee2e6;"><a href="#" onclick="editArticle(' + userId + ', ' + articles[i]['article_id'] + ', \'' + articles[i]['article_title'] + '\', \'' + articles[i]['article_script'] + '\')">Edit</a></td>';
+                html += '</tr>';
+                count++;
+            }
+
+            html += '</tbody>';
+            html += '</table>';
+            html += '</div>';
+            return html;
+        }
+
+        function editArticle(userId, articleId, articleTitle, articleScript) {
+            var form = document.createElement('form');
+            form.setAttribute('method', 'POST');
+            form.setAttribute('action', '<?= base_url("user/edit-article") ?>');
+
+            var articleIdField = document.createElement('input');
+            articleIdField.setAttribute('type', 'hidden');
+            articleIdField.setAttribute('name', 'article_id');
+            articleIdField.setAttribute('value', articleId);
+            form.appendChild(articleIdField);
+
+            var userIdField = document.createElement('input');
+            userIdField.setAttribute('type', 'hidden');
+            userIdField.setAttribute('name', 'user_id');
+            userIdField.setAttribute('value', userId);
+            form.appendChild(userIdField);
+
+            var articleTitleField = document.createElement('input');
+            articleTitleField.setAttribute('type', 'hidden');
+            articleTitleField.setAttribute('name', 'title');
+            articleTitleField.setAttribute('value', articleTitle);
+            form.appendChild(articleTitleField);
+
+            var articleScriptField = document.createElement('input');
+            articleScriptField.setAttribute('type', 'hidden');
+            articleScriptField.setAttribute('name', 'content');
+            articleScriptField.setAttribute('value', articleScript);
+            form.appendChild(articleScriptField);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
         // charts
         const userData = document.getElementById("user-analytic");
         const userDataStates = document.getElementById("active-user-states");

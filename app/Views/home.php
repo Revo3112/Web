@@ -226,9 +226,23 @@
             <a href="home.php">The Tangerang Times</a>
         </div>
         <div class="right-container">
-            <a href="login">
-                <button type="button" class="btn btn-dark btn-sm">MASUK</button>
-            </a>
+            <?php if (session()->get('logged_in') == false) : ?>
+                <a href="login">
+                    <button type="button" class="btn btn-dark btn-sm">MASUK</button>
+                </a>
+            <?php else : ?>
+                <?php if (session()->get('role') == 'Admin') : ?>
+                    <a class="nav-link" href="<?= base_url('admin') ?>" style="display: flex; align-items: center;  margin-left: 200px">
+                        <p style="display: inline-block; position: relative; top: 10px; margin-right: 10px"><?php echo session()->get('name')  ?></p>
+                        <span class=" iconify" data-icon="mdi:account-circle" style="font-size: 50px;"></span>
+                    </a>
+                <?php else : ?>
+                    <a class="nav-link" href="<?= base_url('user') ?>" style="display: flex; align-items: center; margin-left: 200px;">
+                        <p style="display: inline-block; position: relative; top: 10px; margin-right: 10px;"><?php echo session()->get('name')  ?></p>
+                        <span class="iconify" data-icon="mdi:account-circle" style="font-size: 50px;"></span>
+                    </a>
+                <?php endif; ?>
+            <?php endif ?>
         </div>
     </div>
     <hr class="header-divider">
@@ -398,7 +412,7 @@
                         </p>
                     </div>
                     <div class="content-figure">
-                        <img src="assets/home/news-1.jpg" alt="image" width="400">
+                        <img src="https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1634025439/01hq8kpfrxbd7bb1vmpk2zdf06.jpg" alt="image" width="400">
                     </div>
                 </div>
             </a>
@@ -523,6 +537,10 @@
             </a>
         </div>
     </div>
+
+    <!-- Iconify -->
+    <script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <!-- DataTables -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>

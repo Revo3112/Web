@@ -15,14 +15,22 @@ class UserModel extends Model
         'category_id',
     ];
 
-    public function getUserArticles($user_id = 1, $article_id = 0)
+    public function getUserArticles($user_id)
     {
         $this->table = 'articles';
 
-        if ($article_id == 0) {
-            return $this->where(['user_id' => $user_id])->findAll();
-        }
-        return $this->where(['user_id' => $user_id, 'id' => $article_id])->findAll();
+        return $this->select('articles.*, users.username AS username, categories.category_name AS category_name')
+            ->join('categories', 'categories.id = articles.category_id')
+            ->join('users', 'users.id = articles.user_id')
+            ->where(['articles.user_id' => $user_id])
+            ->findAll();
+    }
+
+    public function getCategories()
+    {
+        $this->table = 'categories';
+
+        return $this->findAll();
     }
 
     public function insertUserArticles($data)
@@ -33,7 +41,7 @@ class UserModel extends Model
 
         $data = [
             'user_id' => $data['user_id'],
-            'category_id' => '1',
+            'category_id' => $data['category_id'],
             'published' => $currentTimestamp,
             'script' => $data['content'],
             'title' => $data['title'],
@@ -47,7 +55,7 @@ class UserModel extends Model
         $this->table = 'articles';
 
         $dataUpdate = [
-            'category_id' => '1',
+            'category_id' => $data['category_id'],
             'script' => $data['content'],
             'title' => $data['title'],
         ];

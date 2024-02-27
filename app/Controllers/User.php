@@ -15,10 +15,16 @@ class User extends BaseController
 
     public function index()
     {
+        if (!session()->get('user_id')) {
+            return redirect()->to('/');
+        }
+
         $data = [
-            'dataUser' => $this->userModel->getUserArticles(1),
-            'user_id' => 1,
+            'dataUser' => $this->userModel->getUserArticles(session()->get('user_id')),
+            'user_id' => session()->get('user_id'),
         ];
+
+        $data['username'] = session()->get('name');
 
         // if (empty($data['dataUser'])) {
         //     throw new \CodeIgniter\Exceptions\PageNotFoundException('Data artikel tidak ditemukan!');
@@ -30,8 +36,10 @@ class User extends BaseController
     public function addArticle()
     {
         $data = [
-            'user_id' => 1,
+            'user_id' => session()->get('user_id'),
+            'categories' => $this->userModel->getCategories(),
         ];
+
         return view('article', $data);
     }
 
@@ -42,6 +50,8 @@ class User extends BaseController
             'article_id' => $this->request->getVar('article_id'),
             'title' => $this->request->getVar('title'),
             'content' => $this->request->getVar('content'),
+            'category_id' => $this->request->getVar('category_id'),
+            'categories' => $this->userModel->getCategories(),
         ];
 
         return view('article', $data);
@@ -62,8 +72,6 @@ class User extends BaseController
 
     public function saveArticle()
     {
-
-        $role = session()->get('role');
         $article_id = $this->request->getVar('article_id');
 
         if (empty($article_id)) {
@@ -71,18 +79,14 @@ class User extends BaseController
                 'user_id' => $this->request->getVar('user_id'),
                 'title' => $this->request->getVar('title'),
                 'content' => $this->request->getVar('content'),
+                'category_id' => $this->request->getVar('category_id'),
             ])) {
                 session()->setFlashdata('success', 'Artikel berhasil ditambahkan!');
 
-                if ($role == 'Admin') {
-                    return redirect()->to('admin');
-                }
                 return redirect()->to('user');
             } else {
                 session()->setFlashdata('failed', 'Artikel gagal ditambahkan!');
-                if ($role == 'Admin') {
-                    return redirect()->to('admin');
-                }
+
                 return redirect()->to('user');
             }
         } else {
@@ -90,18 +94,15 @@ class User extends BaseController
                 'user_id' => $this->request->getVar('user_id'),
                 'article_id' => $this->request->getVar('article_id'),
                 'title' => $this->request->getVar('title'),
+                'category_id' => $this->request->getVar('category_id'),
                 'content' => $this->request->getVar('content'),
             ])) {
                 session()->setFlashdata('success', 'Artikel berhasil diedit!');
-                if ($role == 'Admin') {
-                    return redirect()->to('admin');
-                }
+
                 return redirect()->to('user');
             } else {
                 session()->setFlashdata('failed', 'Artikel gagal diedit!');
-                if ($role == 'Admin') {
-                    return redirect()->to('admin');
-                }
+
                 return redirect()->to('user');
             }
         }

@@ -76,7 +76,6 @@
         }
 
         .dataTables_wrapper .dataTables_filter .form-control {
-            border-color: #454d55;
             border-radius: 20px;
         }
     </style>
@@ -110,17 +109,16 @@
                                         <td style="border: 1px solid #dee2e6;"><?php echo $i + 1; ?></td>
                                         <td class="d-flex justify-content-between align-items-center" style="border: 1px solid #dee2e6;">
                                             <div><?php echo $d["username"]; ?></div>
-                                            <div class="dropdown">
-                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-caret-down"></i> <!-- Ikon panah ke bawah -->
-                                                </button>
-                                            </div>
                                         </td>
+                                        <!-- Tambahkan kolom Created_at dan Last_active -->
+                                        <td style="border: 1px solid #dee2e6;"><?php echo $d["created_at"]; ?></td>
+                                        <td style="border: 1px solid #dee2e6;"><?php echo $d["last_active"]; ?></td>
                                     </tr>
                                     <?php $i++; ?>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>

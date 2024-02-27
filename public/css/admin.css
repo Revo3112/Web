@@ -1,0 +1,475 @@
+/* import */
+@import url('https://fonts.cdnfonts.com/css/chomsky');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:wght@500;600;700&display=swap');
+
+:root {
+    --app-bg: #000000;
+    --sidebar: #121212;
+    --sidebar-text: #B3B3B3;
+    --sidebar-text-active: #fff;
+    --dropdown-bg: #282828;
+    --active-hover: #3D3D3E;
+    --widgets-active: #242424;
+}
+
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif !important;
+    background-color: var(--app-bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.app-logo-text {
+    display: flex;
+    align-items: center;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #4300ff 0%, #717371 100%);
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    font-family: 'Chomsky';
+    font-size: 40;
+    font-weight: 100;
+}
+
+.app-icon p {
+    color: var(--sidebar-text-active);
+    margin-right: 2px;
+}
+
+.app-icon {
+    display: flex;
+    align-items: center;
+    padding: 0 10 0 10;
+    border-radius: 10px;
+    transition: background-color 200ms;
+    cursor: pointer;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    border-radius: 3px;
+    width: 90px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 3px 0 rgba(0, 0, 0, 0.19);
+    /* Box shadow added */
+    background-color: var(--dropdown-bg);
+    z-index: 1;
+}
+
+.profile-dropdown a {
+    padding: 7px;
+    font-size: 13;
+    color: var(--sidebar-text-active);
+    text-decoration: none;
+    display: block;
+}
+
+.app-icon:hover {
+    #username {
+        color: var(--sidebar-text-active);
+        transition: 200ms;
+    }
+
+    background-color: var(--active-hover);
+    transition: 200ms;
+}
+
+.dropdown-hover {
+    border-radius: 5px;
+    margin: 3;
+}
+
+.dropdown-hover:hover {
+    background-color: var(--active-hover);
+    transition: 200ms;
+}
+
+#username {
+    font-size: 15;
+    color: var(--sidebar-text);
+    margin-top: -17;
+    transition: color 200ms;
+}
+
+
+.app-container {
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    overflow: hidden;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    max-width: 2000px;
+}
+
+.app-logo-admin {
+    margin-left: 15;
+}
+
+.sidebar {
+    border-radius: 10px;
+    margin: 10;
+    padding: 10;
+    flex-basis: 250px;
+    max-width: 300px;
+    flex-shrink: 0;
+    background-color: var(--sidebar);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-list-item a {
+    text-decoration: none;
+    color: var(--sidebar-text);
+    font-size: 18px;
+    align-items: center;
+    display: flex;
+    width: 100%;
+}
+
+.sidebar-list-item {
+    display: flex;
+    list-style: none;
+    height: 30px;
+    margin-bottom: 20px;
+    margin-left: -27px;
+    transition: color 200ms;
+}
+
+.sidebar-list-item.active a {
+    color: var(--sidebar-text-active);
+}
+
+.sidebar-list-item a:hover {
+    color: var(--sidebar-text-active);
+    transition: 200ms;
+}
+
+.app-content {
+    border-radius: 10px;
+    margin: 10 0 10 0;
+    padding: 0 0 0 10;
+    max-width: 2300px;
+    flex-shrink: 0;
+    background-color: var(--sidebar);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+svg {
+    margin-right: 20px;
+    width: 25;
+    height: 25;
+}
+
+.app-content-image {
+    width: 970px;
+    height: 200px;
+    margin-left: -10px;
+    border-radius: 10px 10px 0px 0px;
+    object-fit: cover;
+    background-size: cover;
+    background-image: linear-gradient(360deg, rgba(0, 0, 0, 1.6601015406162465) 0%, rgba(92, 0, 0, 0.0678606442577031) 80%), url("https://wallpapercave.com/wp/wp3396925.jpg");
+    object-position: 100% 0;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
+    -webkit-transform: scale(0.999);
+    transform: scale(0.999);
+}
+
+.app-content-headerText {
+    color: var(--sidebar-text-active);
+    position: relative;
+    bottom: 160px;
+    margin-left: 20px;
+    font-size: 2.5rem;
+}
+
+.app-content-headerBrand svg {
+    position: relative;
+    bottom: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    fill: #0c67d3;
+}
+
+.app-content-headerBrand {
+    position: relative;
+    bottom: 70px;
+    right: 60px;
+    justify-content: right;
+    align-items: center;
+    display: flex;
+}
+
+.app-content-headerBrand h1 {
+    position: relative;
+    bottom: 2px;
+    margin-right: 10px;
+    font-weight: normal;
+    font-family: 'Chomsky', serif;
+    font-size: 25px;
+    color: var(--sidebar-text-active);
+}
+
+.circle-spot-brand {
+    background-color: white;
+    border-radius: 50%;
+    height: 13px;
+    width: 13px;
+}
+
+.search-bar-container {
+    position: relative;
+    background-color: #0c67d3;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    margin-top: 10px;
+    max-width: 450px;
+    width: 280px;
+    height: 40px;
+    background-color: var(--widgets-active);
+    border-radius: 20px;
+    border: 1px solid transparent;
+}
+
+.search-bar {
+    position: relative;
+    color: var(--sidebar-text-active);
+    width: 400px;
+    font-family: 'Poppins';
+    font-size: 14px;
+    background-color: transparent;
+    outline-width: 0;
+    border: 1px solid transparent;
+}
+
+.search-bar-container:hover {
+    border: 1px solid var(--sidebar-text);
+}
+
+.app-content-actions {
+    position: relative;
+    bottom: 170px;
+    display: flex;
+    align-items: center;
+}
+
+.app-content-actions .edit-button {
+    align-items: center;
+    display: flex;
+    margin-top: 10px;
+    max-width: 300px;
+    position: relative;
+    left: 450px;
+    width: 65px;
+    margin-right: 10px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: var(--widgets-active);
+    color: var(--sidebar-text-active);
+}
+
+.app-content-actions .create-button {
+    align-items: center;
+    display: flex;
+    margin-top: 10px;
+    max-width: 300px;
+    position: relative;
+    left: 450px;
+    width: 85px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: var(--widgets-active);
+    color: var(--sidebar-text-active);
+}
+
+.app-content-actions .edit-button p {
+    margin-left: 17px;
+}
+
+.app-content-actions .create-button p {
+    margin-left: 15px;
+}
+
+.edit-button:hover {
+    cursor: pointer;
+    background-color: var(--active-hover);
+}
+
+.create-button:hover {
+    cursor: pointer;
+    background-color: var(--active-hover);
+}
+
+.app-content-middle {
+    position: relative;
+    bottom: 170px;
+}
+
+.content-header-overview h1 {
+    margin-top: 30px;
+    margin-left: 15px;
+    color: white;
+    font-size: 25px;
+}
+
+.content-image img {
+    border-radius: 7px;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    object-position: 100% 0;
+    -ms-interpolation-mode: nearest-neighbor;
+    -webkit-transform: scale(0.999);
+    transform: scale(0.999);
+}
+
+.content-row-overview {
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.content-overview {
+    margin-right: 25px;
+    padding: 5px;
+    justify-self: center;
+    align-items: center;
+    width: 150px;
+    height: 250px;
+    background-color: #181818;
+    border-radius: 10px;
+    transition: background-color 100ms;
+}
+
+.content-overview:hover {
+    cursor: pointer;
+    background-color: #272727;
+    transition: 200ms;
+}
+
+.title-desc h1 {
+    position: relative;
+    bottom: 25px;
+}
+
+.title-status p {
+    color: var(--sidebar-text);
+    position: relative;
+    bottom: 50px;
+    font-size: 12px;
+}
+
+.content-chart-preview {
+    display: flex;
+    justify-content: space-between;
+    width: 400px;
+    height: 200px;
+    margin: 0 auto;
+    background-color: #3D3D3E;
+    padding: 10px;
+}
+
+.content-body-overview {
+    margin: 0 auto;
+    width: 900px;
+}
+
+.table-body-header {
+    display: flex;
+    align-items: center;
+    background-color: var(--active-hover);
+    color: var(--sidebar-text-active);
+    border-radius: 4px;
+    width: 900px;
+    margin: 0 auto;
+}
+
+.table-body-content {
+    display: flex;
+    align-items: center;
+    color: var(--sidebar-text);
+    border-radius: 4px;
+    width: 900px;
+    margin: 0 auto;
+}
+
+.user-data {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+.sort-button {
+    display: flex;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--sidebar-text);
+    margin-left: 4px;
+    align-items: center;
+
+    &:hover {
+        color: var(--sidebar-text-active);
+    }
+
+    svg {
+        width: 15px;
+    }
+}
+
+#article-tbl {
+    color: white; /* Ganti dengan warna yang diinginkan */
+}
+
+table {
+    width: 85%;
+}
+
+table tr th{
+    width:10%;
+}
+
+/* Mengubah warna teks pada seluruh baris kecuali baris header */
+#article-tbl tbody tr td {
+    color: white; /* Ganti dengan warna yang diinginkan */
+}
+
+/* Mengubah warna teks pada baris header */
+#article-tbl thead tr th {
+    color: white; /* Ganti dengan warna yang diinginkan */
+}
+
+#header-text th {
+    background-color: var(--active-hover);
+    color: var(--sidebar-text-active);
+}
+
+#article-tbl_wrapper {
+    color: white;
+}
