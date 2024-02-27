@@ -19,7 +19,7 @@ class AdminModel extends Model
     public function getUser()
     {
         // Query database with parameter binding to prevent SQL Injection
-        $query = $this->db->query("SELECT id, username FROM users WHERE role = 'User'");
+        $query = $this->db->query("SELECT id, username, created_at, last_active FROM users WHERE role = 'User'");
         return $query->getResultArray();
     }
 
