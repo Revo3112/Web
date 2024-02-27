@@ -1,130 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
+<?= $this->extend('layout/template'); ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<?= $this->section('content'); ?>
 
-    <!-- DataTables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<button type="submit" class="btn btn-primary" onclick="window.location.href = '<?= base_url('user/new-article'); ?>'">
+    <span class="iconify" data-icon="mdi-plus"></span>
+    Tambah Article
+</button>
 
-    <!-- Quill -->
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
-</head>
+<button type="submit" class="btn btn-primary" onclick="window.location.href = '<?= base_url('auth/logout'); ?>'"></button>
 
-<body>
-    <!-- S: Ketika user tambah article -->
-    <!-- TODO: hilangkan form ketika statusnya bergantung pada articleid dari get -->
+<?php if (session()->getFlashdata('success')) : ?>
+    <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+        <strong>Success</strong> | <?= session()->getFlashdata('success'); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php elseif (session()->getFlashdata('failed')) : ?>
+    <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+        <strong>Failed</strong> | <?= session()->getFlashdata('failed'); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 
-    <form action="insert_article.php" method="post">
-        <input type="hidden" name="user-id" value="<?= $user_id ?>">
-        <button type="submit" class="btn btn-primary">
-            <span class="iconify" data-icon="mdi-plus"></span>
-            Tambah Article
-        </button>
-        <a href="home" style="margin-left: 20px;">Go to Homepage</a>
-    </form>
+<form id="article-form" action="<?= base_url('user/edit-article') ?>" method="post">
+    <input type="hidden" name="user_id" value="<?= session()->get('user_id') ?>">
+    <input type="hidden" name="article_id">
+    <input type="hidden" name="title">
+    <input type="hidden" name="content">
 
+    <table id="article-tbl">
+        <thead>
+            <th>No.</th>
+            <th>Title</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            <?php $i = 0; ?>
+            <?php foreach ($dataUser as $d) : ?>
+                <tr>
+                    <td><?= $i + 1; ?></td>
+                    <td><?= $d["title"] ?></td>
+                    <td>
+                        <button type="submit" class="btn btn-warning edit-btn" data-article_id="<?= $d['id'] ?>" data-title="<?= $d['title'] ?>" data-content="<?= htmlspecialchars($d['script']) ?>">
+                            <span class="iconify" data-icon="mdi-pencil">
+                        </button>
+                        <button type="button" class="btn btn-danger delete-btn" data-title="<?= $d['title'] ?>" data-article_id="<?= $d['id'] ?>">
+                            <span class="iconify" data-icon="mdi-trash">
+                        </button>
+                    </td>
+                </tr>
+                <?php $i++; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</form>
 
-    <!-- S: Ketika user edit article -->
-    <form id="article-form" action="edit_article.php" method="post">
-        <input type="hidden" name="user-id" value="<?= $user_id ?>">
-        <input type="hidden" name="article-id" value="">
-        <input type="hidden" name="article-script" value="">
-        <table id="article-tbl">
-            <thead>
-                <th>No.</th>
-                <th>Title</th>
-                <th>Actions</th>
-            </thead>
-            <tbody>
-                <?php $i = 0; ?>
-                <?php foreach ($dataArticle as $d) : ?>
-                    <tr>
-                        <td><?php echo $i + 1; ?></td>
-                        <td><?php echo $d["title"] ?></td>
-                        <td>
-                            <button type="submit" class="btn btn-warning edit-btn" data-article_id="<?= $d['id'] ?>" data-article_script="<?= $d['script'] ?>">
-                                <span class="iconify" data-icon="mdi-pencil">
-                            </button>
-                            <button type="button" class="btn btn-danger delete-btn" data-article_title="<?= $d['title'] ?>" data-article_id="<?= $d['id'] ?>">
-                                <span class="iconify" data-icon="mdi-trash">
-                            </button>
-                        </td>
-                    </tr>
-                    <?php $i++; ?>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </form>
+<!-- Modal -->
+<form action="" method="post" id="article-delete-form">
+    <input type="hidden" name="_method" value="DELETE">
 
-    <!-- Modal -->
-    <form action="" method="post" id="article-delete-form">
-        <input type="hidden" name="delete-article-id" value="">
-        <div class="modal fade" id="modal-delete-article" tabindex="-1" aria-labelledby="modal-delete-article" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalDeleteArticleTitle">Yakin?</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Apakah Anda yakin untuk menghapus <b><span name="article-title"></span></b></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </div>
+    <div class="modal fade" id="modal-delete-article" tabindex="-1" aria-labelledby="modal-delete-article" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDeleteArticleTitle">Yakin?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin untuk menghapus <b><span name="article-title"></span></b></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+</form>
 
+<?= $this->endSection(); ?>
 
-    <!-- Iconify -->
-    <script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
+<?= $this->section('script'); ?>
 
-    <!-- DataTables -->
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.min.js"></script>
-    <script src="js/datatable.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        initDataTable('#article-tbl');
 
-    <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/a74f1ef5b0.js" crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function() {
-            initDataTable('#article-tbl');
-
-            $('#article-tbl').on('click', '.edit-btn', function() {
-                const data = {
-                    id: $(this).data('article_id'),
-                    script: $(this).data('article_script'),
-                }
-                $('#article-form input[name="article-id"]').val(data.id);
-                $('#article-form input[name="article-script"]').val(data.script);
-            });
-
-            $('#article-tbl').on('click', '.delete-btn', function() {
-                const data = {
-                    title: $(this).data('article_title'),
-                    article_id: $(this).data('article_id'),
-                }
-                console.log(data.title)
-                $('#modal-delete-article span[name="article-title"]').text(data.title);
-                $('#article-delete-form input[name="delete-article-id"]').val(data.article_id);
-                $('#modal-delete-article').modal('show');
-            });
+        $('#article-tbl').on('click', '.edit-btn', function() {
+            const data = {
+                id: $(this).data('article_id'),
+                title: $(this).data('title'),
+                content: $(this).data('content'),
+            }
+            $('#article-form input[name="article_id"]').val(data.id);
+            $('#article-form input[name="title"]').val(data.title);
+            $('#article-form input[name="content"]').val(data.content);
         });
-    </script>
-</body>
 
-</html>
+        $('#article-tbl').on('click', '.delete-btn', function() {
+            const data = {
+                title: $(this).data('title'),
+                article_id: $(this).data('article_id'),
+            }
+
+            var form = $('#article-delete-form');
+            var base_url = "<?= base_url("user/delete-article/$user_id/") ?>" + data.article_id;
+            form.attr('action', base_url);
+
+            $('#modal-delete-article span[name="article-title"]').text(data.title);
+            $('#article-delete-form input[name="delete-article-id"]').val(data.article_id);
+            $('#modal-delete-article').modal('show');
+        });
+    });
+</script>
+
+<?= $this->endSection(); ?>

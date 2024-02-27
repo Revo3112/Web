@@ -1,19 +1,19 @@
 <?php
-include "database.php";
+// include "database.php";
 
-// Ambil data pengguna dari tabel users
-$query = "SELECT id, username FROM users WHERE role = 'User'";
-$users = getData($query);
+// // Ambil data pengguna dari tabel users
+// $query = "SELECT id, username FROM users WHERE role = 'User'";
+// $users = getData($query);
 
-// Inisialisasi array untuk menyimpan data artikel untuk setiap pengguna
-$articles_data = [];
+// // Inisialisasi array untuk menyimpan data artikel untuk setiap pengguna
+// $articles_data = [];
 
-// Loop melalui setiap pengguna
-foreach ($users as $user) {
-    // Ambil data artikel yang sesuai dengan pengguna saat ini
-    $user_id = $user['id'];
-    $articles_data[$user_id] = readArticles($user_id);
-}
+// // Loop melalui setiap pengguna
+// foreach ($users as $user) {
+//     // Ambil data artikel yang sesuai dengan pengguna saat ini
+//     $user_id = $user['id'];
+//     $articles_data[$user_id] = readArticles($user_id);
+// }
 ?>
 
 <!DOCTYPE html>
@@ -121,8 +121,8 @@ foreach ($users as $user) {
                             </thead>
                             <tbody>
                                 <?php $i = 0; ?>
-                                <?php foreach ($users as $user) : ?>
-                                    <tr class="parent" id="<?php echo $user['id']; ?>"> <!-- Tambahkan id pengguna sebagai id baris -->
+                                <?php foreach ($dataUser as $d) : ?>
+                                    <tr class="parent" id="<?php echo $d['dataUser']; ?>"> <!-- Tambahkan id pengguna sebagai id baris -->
                                         <td style="border: 1px solid #dee2e6;"><?php echo $i + 1; ?></td>
                                         <td class="d-flex justify-content-between align-items-center" style="border: 1px solid #dee2e6;">
                                             <div><?php echo $user["username"]; ?></div>

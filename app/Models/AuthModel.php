@@ -22,7 +22,7 @@ class AuthModel extends Model
             if (password_verify($password, $result->password)) {
                 // Set session data
                 $sess_data = [
-                    'id' => $result->id,
+                    'user_id' => $result->id,
                     'name' => $result->username,
                     'role' => $result->role,
                     'logged_in' => TRUE

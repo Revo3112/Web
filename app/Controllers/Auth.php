@@ -39,7 +39,7 @@ class Auth extends BaseController
                     if ($role == 'Admin') {
                         return view('/admin');
                     } elseif ($role == 'User') {
-                        return view('/user');
+                        return redirect()->to('/user');
                     }
                 } else {
                     $validation->setError('login', 'Username or password is incorrect');
@@ -96,5 +96,10 @@ class Auth extends BaseController
                 return view('signup_page', $data);
             }
         }
+    }
+
+    public function logout()
+    {
+        $this->login->logout();
     }
 }
