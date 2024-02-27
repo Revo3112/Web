@@ -10,10 +10,15 @@
         .card-custom {
             border-radius: 10px;
         }
+
+        /* Add Poppins font family */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
 </head>
 
-<body class="font-poppins">
+<body>
     <div class="container">
         <div class="row justify-content-center align-items-center vh-100">
             <div class="col-lg-6">

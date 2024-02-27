@@ -37,7 +37,7 @@ class Auth extends BaseController
                 if ($success) {
                     $role = session()->get('role');
                     if ($role == 'Admin') {
-                        return view('/admin');
+                        return redirect()->to('/admin');
                     } elseif ($role == 'User') {
                         return redirect()->to('/user');
                     }
@@ -101,5 +101,6 @@ class Auth extends BaseController
     public function logout()
     {
         $this->login->logout();
+        return redirect()->to('/');
     }
 }

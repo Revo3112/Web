@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\BaseController;
+namespace App\Controllers;
 
 class Admin extends BaseController
 {
@@ -9,7 +9,7 @@ class Admin extends BaseController
 
     public function __construct()
     {
-        $this->admin = new  AdminModel;
+        $this->admin = new  \App\Models\AdminModel();
     }
 
     public function index()
@@ -19,17 +19,28 @@ class Admin extends BaseController
             return redirect()->to('login');
         }
 
+        // Ambil semua artikel dari database
+        $allArticles = $this->admin->readArticles();
+
+        // Inisialisasi array untuk menyimpan artikel berdasarkan ID pengguna
+        $articlesByUser = [];
+        // Memisahkan artikel berdasarkan ID pengguna
+        foreach ($allArticles as $article) {
+            $userId = $article['user_id'];
+            if (!isset($articlesByUser[$userId])) {
+                $articlesByUser[$userId] = [];
+            }
+            $articlesByUser[$userId][] = $article;
+        }
+
+        // dd($articlesByUser);
+
+        // Data yang akan dikirimkan ke view
         $data = [
-            'dataUser' => $this->admin->getUser(session()->get('user_id')),
+            'dataUser' => $this->admin->getUser(), // Mengambil semua pengguna
+            'articlesByUser' => $articlesByUser,
         ];
 
-        return view('user', $data);
-    }
-
-    public function readArtciles()
-    {
-        $data = [
-            'dataUser' => $this->admin->readArticles(session()->get('user_id')),
-        ];
+        return view('admin', $data);
     }
 }

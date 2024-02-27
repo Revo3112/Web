@@ -3,8 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
-use CodeIgniter\CodeIgniter;
-use Exception;
 
 class User extends BaseController
 {
@@ -17,14 +15,9 @@ class User extends BaseController
 
     public function index()
     {
-        $islogin = session()->get('logged_in');
-        if (!$islogin) {
-            return redirect()->to('login');
-        }
-
         $data = [
             'dataUser' => $this->userModel->getUserArticles(1),
-            'user_id' => session()->get('user_id'),
+            'user_id' => 1,
         ];
 
         // if (empty($data['dataUser'])) {
@@ -34,35 +27,16 @@ class User extends BaseController
         return view('user', $data);
     }
 
-    public function detail($user_id, $article_id)
-    {
-        $article = $this->userModel->getUserArticles($user_id, $article_id);
-
-        $data = [
-            'article' => $article,
-        ];
-
-        return view('article', $data);
-    }
-
     public function addArticle()
     {
-        $islogin = session()->get('logged_in');
-        if (!$islogin) {
-            return redirect()->to('login');
-        }
         $data = [
-            'user_id' => session()->get('user_id'),
+            'user_id' => 1,
         ];
         return view('article', $data);
     }
 
     public function editArticle()
     {
-        $islogin = session()->get('logged_in');
-        if (!$islogin) {
-            return redirect()->to('login');
-        }
         $data = [
             'user_id' => $this->request->getVar('user_id'),
             'article_id' => $this->request->getVar('article_id'),
@@ -88,6 +62,8 @@ class User extends BaseController
 
     public function saveArticle()
     {
+
+        $role = session()->get('role');
         $article_id = $this->request->getVar('article_id');
 
         if (empty($article_id)) {
@@ -98,10 +74,15 @@ class User extends BaseController
             ])) {
                 session()->setFlashdata('success', 'Artikel berhasil ditambahkan!');
 
+                if ($role == 'Admin') {
+                    return redirect()->to('admin');
+                }
                 return redirect()->to('user');
             } else {
                 session()->setFlashdata('failed', 'Artikel gagal ditambahkan!');
-
+                if ($role == 'Admin') {
+                    return redirect()->to('admin');
+                }
                 return redirect()->to('user');
             }
         } else {
@@ -112,11 +93,15 @@ class User extends BaseController
                 'content' => $this->request->getVar('content'),
             ])) {
                 session()->setFlashdata('success', 'Artikel berhasil diedit!');
-
+                if ($role == 'Admin') {
+                    return redirect()->to('admin');
+                }
                 return redirect()->to('user');
             } else {
                 session()->setFlashdata('failed', 'Artikel gagal diedit!');
-
+                if ($role == 'Admin') {
+                    return redirect()->to('admin');
+                }
                 return redirect()->to('user');
             }
         }

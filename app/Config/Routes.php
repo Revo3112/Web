@@ -6,7 +6,6 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/admin', 'Home::admin');
 $routes->get('login', 'Home::login_page');
 $routes->get('signup', 'Home::signup_page');
 
@@ -25,7 +24,7 @@ $routes->group('user', function ($routes) {
 });
 
 $routes->group('admin', function ($routes) {
-    $routes->get('view', '');
+    $routes->get('/', 'Admin::index');
 });
 
 $routes->group('auth', function ($routes) {

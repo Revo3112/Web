@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Models;
+
 use CodeIgniter\Model;
 
 class AdminModel extends Model
@@ -18,24 +20,21 @@ class AdminModel extends Model
     {
         // Query database with parameter binding to prevent SQL Injection
         $query = $this->db->query("SELECT id, username FROM users WHERE role = 'User'");
-        return $query->getResult();
+        return $query->getResultArray();
     }
 
-    public function readArticles($user_id)
+    public function readArticles()
     {
         $builder = $this->db->table('articles');
-        $builder->select('articles.id AS article_id, articles.published AS published_date, articles.title AS article_title, users.username, categories.category_name');
+        $builder->select('articles.user_id AS user_id, articles.id AS article_id, articles.published AS published_date, articles.title AS article_title, articles.script AS article_script, users.username, categories.category_name');
         $builder->join('users', 'articles.user_id = users.id');
         $builder->join('categories', 'articles.category_id = categories.id');
-        $builder->where('articles.user_id', $user_id);
         $builder->where('users.role', 'User');
 
         $query = $builder->get();
 
         // Get the result array
         $result = $query->getResultArray();
-
-        dd($result);
 
         return $result;
     }

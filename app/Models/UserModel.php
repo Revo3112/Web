@@ -7,6 +7,7 @@ use CodeIgniter\Model;
 class UserModel extends Model
 {
     protected $allowedFields = [
+        'id',
         'user_id',
         'published',
         'title',
@@ -44,6 +45,18 @@ class UserModel extends Model
     public function editUserArticles($data)
     {
         $this->table = 'articles';
+
+        $dataUpdate = [
+            'category_id' => '1',
+            'script' => $data['content'],
+            'title' => $data['title'],
+        ];
+
+        $this->where(['user_id' => $data['user_id'], 'id' => $data['article_id']]);
+
+        $this->set($dataUpdate);
+
+        return $this->update();
     }
 
     public function deleteUserArticles($user_id, $article_id)
@@ -51,6 +64,7 @@ class UserModel extends Model
         $this->table = 'articles';
 
         $this->where(['user_id' => $user_id, 'id' => $article_id]);
+
         return $this->delete();
     }
 }

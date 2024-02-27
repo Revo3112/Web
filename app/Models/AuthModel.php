@@ -8,10 +8,13 @@ class AuthModel extends Model
 {
     protected $table = 'users';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['username', 'password'];
+    protected $allowedFields = ['username', 'password', 'created_at', 'last_active'];
 
     public function login($username, $password)
     {
+        // Set zona waktu ke waktu Indonesia (Waktu Indonesia Barat)
+        date_default_timezone_set('Asia/Jakarta');
+
         // Query database with parameter binding to prevent SQL Injection
         $query = $this->db->query("SELECT * FROM users WHERE username = ?", [$username]);
 
@@ -28,18 +31,32 @@ class AuthModel extends Model
                     'logged_in' => TRUE
                 ];
                 session()->set($sess_data);
+
+                // Update last_active time
+                $currentDateTime = date('Y-m-d H:i:s');
+                $this->db->table('users')->where('id', $result->id)->update(['last_active' => $currentDateTime]);
+
                 return true;
             }
         }
         return false;
     }
 
+
     public function signup($username, $password)
     {
+        // Set zona waktu ke waktu Indonesia (Waktu Indonesia Barat)
+        date_default_timezone_set('Asia/Jakarta');
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $currentDateTime = date('Y-m-d H:i:s');
+
         // Membuat data yang akan disisipkan
         $data = [
             'username' => $username,
-            'password' => password_hash($password, PASSWORD_DEFAULT)
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+            'created_at' => $currentDateTime,
+            'last_active' => $currentDateTime // Diatur sama dengan waktu pembuatan untuk saat ini
         ];
 
         // Menyisipkan data ke dalam tabel 'users'
@@ -50,11 +67,30 @@ class AuthModel extends Model
     }
 
 
+
     public function logout()
     {
-        // Destroy session
+        // Set zona waktu ke waktu Indonesia (Waktu Indonesia Barat)
+        date_default_timezone_set('Asia/Jakarta');
+
+        // Mendapatkan user ID dari sesi
+        $userId = session()->get('user_id');
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        // Menyiapkan data untuk update
+        $data = [
+            'last_active' => $currentDateTime
+        ];
+
+        // Melakukan update pada kolom last_active untuk pengguna yang sedang logout
+        $this->db->table('users')->where('id', $userId)->update($data);
+
+        // Menghapus sesi
         session()->destroy();
     }
+
 
     public function is_logged_in()
     {
