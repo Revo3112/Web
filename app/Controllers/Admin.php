@@ -41,6 +41,6 @@ class Admin extends BaseController
             'articlesByUser' => $articlesByUser,
         ];
 
-        return view('admin-dummy', $data);
+        return view('admin', $data);
     }
 }

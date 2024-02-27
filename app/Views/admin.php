@@ -99,6 +99,8 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>Username</th>
+                                    <th>Created_at</th>
+                                    <th>Last_active</th>
                                 </tr>
                             </thead>
                             <tbody>
