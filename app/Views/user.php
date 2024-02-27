@@ -1,30 +1,3 @@
-<?php
-
-include "database.php";
-
-$user_id = $_GET["id"];
-
-$query = "SELECT * FROM users WHERE id=$user_id";
-$dataUser = getData($query);
-
-$query = "SELECT * FROM articles WHERE user_id=$user_id";
-$dataArticle = getData($query);
-
-if (isset($_GET["status"])) {
-    if ($_GET["status"] == "success") {
-        echo "<script>
-            alert('Berhasil');
-        </script>";
-    }
-}
-
-if (isset($_POST['delete-article-id'])) {
-    $article_id = $_POST['delete-article-id'];
-
-    deleteUserArticle($user_id, $article_id);
-}
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,7 +29,7 @@ if (isset($_POST['delete-article-id'])) {
             <span class="iconify" data-icon="mdi-plus"></span>
             Tambah Article
         </button>
-        <a href="home.php" style="margin-left: 20px;">Go to Homepage</a>
+        <a href="home" style="margin-left: 20px;">Go to Homepage</a>
     </form>
 
 

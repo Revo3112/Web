@@ -226,7 +226,7 @@
             <a href="home.php">The Tangerang Times</a>
         </div>
         <div class="right-container">
-            <a href="login_page.php">
+            <a href="login">
                 <button type="button" class="btn btn-dark btn-sm">MASUK</button>
             </a>
         </div>
