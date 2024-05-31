@@ -20,6 +20,7 @@ class AuthModel extends Model
 
         // Get result as object array
         $result = $query->getRow();
+
         if ($result) {
             // Verify password
             if (password_verify($password, $result->password)) {
